@@ -6,9 +6,11 @@ can both call these.
 """
 
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import Session
 
 import models
 import schemas
+from database import get_db
 from security import get_current_user
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -21,6 +23,23 @@ def read_me(current_user: models.User = Depends(get_current_user)):
     valid token in the Authorization header -> the dependency raises a
     401 and this function never runs.
     """
+    return current_user
+
+
+@router.put("/me", response_model=schemas.UserOut)
+def update_me(
+    update_data: schemas.UserUpdate,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """Update current user profile information."""
+    if update_data.full_name is not None:
+        current_user.full_name = update_data.full_name
+    if update_data.phone is not None:
+        current_user.phone = update_data.phone
+    
+    db.commit()
+    db.refresh(current_user)
     return current_user
 
 

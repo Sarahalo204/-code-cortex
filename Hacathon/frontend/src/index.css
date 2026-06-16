@@ -387,6 +387,7 @@ body {
   line-height: 1.5;
   border: 1px solid #BFE3DD;
   max-width: 75%;
+  white-space: pre-wrap;
 }
 
 .user-msg .messageAi {

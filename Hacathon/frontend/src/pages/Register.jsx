@@ -22,47 +22,53 @@ export default function Register() {
       // register() also logs in afterwards (see AuthContext), so we
       // can go straight to the dashboard.
       await register(email, password, role)
-      navigate('/dashboard')
+      navigate('/contract')
     } catch (err) {
-      setError(err.message)
+      if (err.message.includes("422") || err.message.includes("Unprocessable Entity") || err.message.includes("validation")) {
+        setError('الرقم السري يجب أن يكون 6 أحرف على الأقل، أو البريد الإلكتروني غير صحيح.')
+      } else {
+        setError(err.message)
+      }
     }
   }
 
   return (
     <div className="card">
-      <h1>Register</h1>
-      {error && <p className="error">{error}</p>}
+      <h1>إنشاء حساب جديد</h1>
+      {error && <p className="error" style={{ background: '#FEF2F2', color: '#DC2626', padding: '10px', borderRadius: '8px' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <label>
-          Email
+          البريد الإلكتروني
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            placeholder="example@mail.com"
           />
         </label>
         <label>
-          Password (min 6 characters)
+          الرقم السري (6 أحرف على الأقل)
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             minLength={6}
             required
+            placeholder="••••••"
           />
         </label>
         <label>
-          Role
+          نوع الحساب
           <select value={role} onChange={(e) => setRole(e.target.value)}>
-            <option value="user">User</option>
-            <option value="admin">Lawer</option>
+            <option value="user">مستخدم عادي</option>
+            <option value="admin">محامي (استشاري)</option>
           </select>
         </label>
-        <button type="submit">Create account</button>
+        <button type="submit">تسجيل</button>
       </form>
       <p>
-        Already have an account? <Link to="/login">Log in</Link>
+        لديك حساب بالفعل؟ <Link to="/login">تسجيل الدخول</Link>
       </p>
     </div>
   )

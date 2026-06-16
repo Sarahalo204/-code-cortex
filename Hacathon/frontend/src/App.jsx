@@ -15,6 +15,7 @@ import ContractPage from './pages/ContractPage'
 import AnalyzePage from './pages/AnalyzePage'
 import ResultPage from './pages/RsultPage'
 import CommunityPage from './pages/CommunityPage'
+import LawyersPage from './pages/LawyersPage'
  
 export default function App() {
   return (
@@ -26,9 +27,24 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/contract" element={<ContractPage />} />
-            <Route path="/analyze" element={<AnalyzePage />} />
+            <Route
+              path="/analyze"
+              element={
+                <ProtectedRoute>
+                  <AnalyzePage />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/result" element={<ResultPage />} />
-            <Route path="/community" element={<CommunityPage />} />
+            <Route
+              path="/community"
+              element={
+                <ProtectedRoute>
+                  <CommunityPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/lawyers" element={<LawyersPage />} />
             <Route
               path="/dashboard"
               element={
@@ -46,7 +62,8 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/contract" replace />} />
+            <Route path="*" element={<Navigate to="/contract" replace />} />
           </Routes>
         </main>
       </BrowserRouter>

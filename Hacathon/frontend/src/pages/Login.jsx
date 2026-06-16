@@ -20,7 +20,7 @@ export default function Login() {
 
     try {
       await login(email, password)
-      navigate('/dashboard')
+      navigate('/contract')
     } catch (err) {
       // The message comes from the backend's "detail" field, e.g.
       // "Incorrect email or password".
@@ -30,31 +30,33 @@ export default function Login() {
 
   return (
     <div className="card">
-      <h1>Log in</h1>
-      {error && <p className="error">{error}</p>}
+      <h1>تسجيل الدخول</h1>
+      {error && <p className="error" style={{ background: '#FEF2F2', color: '#DC2626', padding: '10px', borderRadius: '8px' }}>{error === 'Incorrect email or password' ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : error}</p>}
       <form onSubmit={handleSubmit}>
         <label>
-          Email
+          البريد الإلكتروني
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            placeholder="example@mail.com"
           />
         </label>
         <label>
-          Password
+          الرقم السري
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            placeholder="••••••"
           />
         </label>
-        <button type="submit">Log in</button>
+        <button type="submit">دخول</button>
       </form>
       <p>
-        No account? <Link to="/register">Register</Link>
+        ليس لديك حساب؟ <Link to="/register">إنشاء حساب جديد</Link>
       </p>
     </div>
   )

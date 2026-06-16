@@ -38,6 +38,11 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserUpdate(BaseModel):
+    """Body of PUT /users/me."""
+    full_name: str | None = None
+    phone: str | None = None
+
 class UserOut(BaseModel):
     """
     What we send back when returning a user. Note there's no password
@@ -47,6 +52,8 @@ class UserOut(BaseModel):
     id: int
     email: EmailStr
     role: str
+    full_name: str | None = None
+    phone: str | None = None
 
     # from_attributes lets Pydantic build this schema straight from a
     # SQLAlchemy User object (it reads user.id, user.email, etc.)

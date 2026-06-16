@@ -26,3 +26,6 @@ class User(Base):
     # column that is either "user" or "admin". Routes that need admin
     # access check this value before letting the request through.
     role = Column(String, default="user", nullable=False)
+
+    full_name = Column(String, nullable=True)
+    phone = Column(String, nullable=True)

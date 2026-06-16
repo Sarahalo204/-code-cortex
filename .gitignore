@@ -1,5 +1,0 @@
-.env
-app.db
-__pycache__/
-node_modules/
-dist/

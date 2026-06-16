@@ -8,6 +8,16 @@ import fitz
 import json
 import re
 import os
+
+try:
+    import rag_engine
+    _rag_available = True
+except ImportError as e:
+    print(f"[WARNING] RAG engine not available: {e}")
+    print("   Install RAG dependencies: pip install sentence-transformers chromadb openai nltk")
+    print("   lookup_saudi_law will use Claude Haiku as fallback.")
+    _rag_available = False
+    rag_engine = None
  
 from database import Base, engine
 from routes import admin, auth, users
@@ -15,9 +25,9 @@ from routes import admin, auth, users
 load_dotenv()
  
 Base.metadata.create_all(bind=engine)
- 
+
 app = FastAPI(title="ContractScan AI")
- 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
@@ -25,11 +35,24 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
- 
+
 # ===== Auth Routes =====
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(admin.router)
+
+
+@app.on_event("startup")
+def startup_event():
+    """Initialize RAG system when the server starts."""
+    if not _rag_available:
+        print("[WARNING] RAG system skipped (dependencies not installed).")
+        return
+    try:
+        rag_engine.init_rag()
+    except Exception as e:
+        print(f"[ERROR] RAG initialization failed: {e}")
+        print("lookup_saudi_law will fallback to Claude Haiku.")
  
 # ===== AI Client =====
 client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
@@ -65,7 +88,7 @@ You have access to tools — use them proactively:
 - Use lookup_saudi_law when you need to cite a specific law or legal principle
 - Use summarize_party_rights when the user asks about rights
  
-Format responses with markdown (## headings, **bold**, > quotes, - lists).
+Format responses clearly in plain text. DO NOT use markdown like ##, **, or >. Use simple spacing and newlines for readability.
 Respond in the same language the user writes in (Arabic or English)."""
  
 CHAT_TOOLS = [
@@ -128,6 +151,27 @@ def execute_tool(tool_name: str, tool_input: dict, contract_text: str) -> str:
         return resp.content[0].text
  
     elif tool_name == "lookup_saudi_law":
+        topic = tool_input["topic"]
+        # Use RAG system for real Saudi law lookup
+        if _rag_available and rag_engine.is_initialized():
+            try:
+                hits = rag_engine.search(topic, top_k=5)
+                if not hits:
+                    return "لم يتم العثور على نصوص قانونية متعلقة بهذا الموضوع في نظام العمل السعودي."
+                result_parts = []
+                for i, hit in enumerate(hits, 1):
+                    meta = hit.get("meta", {})
+                    article = meta.get("article", "")
+                    page = meta.get("page", "")
+                    score = hit.get("score", 0)
+                    header = f"المادة: {article}" if article else f"صفحة {page}"
+                    result_parts.append(
+                        f"{i}. {header}\n{hit['text']}\n(درجة التطابق: {score:.2f})"
+                    )
+                return "\n\n".join(result_parts)
+            except Exception as e:
+                print(f"[WARNING] RAG search failed, falling back to Claude: {e}")
+        # Fallback: use Claude Haiku if RAG is not available
         resp = client.messages.create(
             model="claude-haiku-4-5-20251001",
             max_tokens=500,
@@ -136,7 +180,7 @@ def execute_tool(tool_name: str, tool_input: dict, contract_text: str) -> str:
                 "role": "user",
                 "content": (
                     f"What does Saudi Civil Transactions Law (نظام المعاملات المدنية, issued 2023) "
-                    f"say about: **{tool_input['topic']}**?\n\n"
+                    f"say about: **{topic}**?\n\n"
                     "Include the relevant principle, article numbers if confident, and practical implication for a Saudi freelancer."
                 ),
             }],
