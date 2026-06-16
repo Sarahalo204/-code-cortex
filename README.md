@@ -1,55 +1,55 @@
 # Code Cortex 🧠⚖️
 
-**Code Cortex** هو منصة ذكية لتحليل العقود القانونية باستخدام الذكاء الاصطناعي (Claude + RAG). يهدف المشروع لتسهيل قراءة العقود المعقدة، استخراج أهم البنود، وتحليل المخاطر القانونية المحتملة.
+**Code Cortex** is an AI-powered legal contract analysis platform utilizing Anthropic's Claude and RAG (Retrieval-Augmented Generation). The project aims to simplify reading complex contracts, extracting key clauses, and analyzing potential legal risks.
 
-## ✨ المميزات الرئيسية
-- 🔐 **نظام تسجيل دخول وحماية:** حسابات للمستخدمين العاديين والمحامين بصلاحيات مختلفة.
-- 📄 **تحليل العقود بالذكاء الاصطناعي:** رفع العقد وطرح أسئلة عليه مباشرة مع محرك RAG المدمج.
-- 💬 **مجتمع تفاعلي:** مساحة لمشاركة التجارب والنصائح حول العقود (متاح للمسجلين فقط).
-- 👨‍⚖️ **دليل المحامين:** تصفح قائمة بالمحامين المعتمدين والتواصل معهم مباشرة عبر الواتساب.
-- 📱 **واجهة مستخدم عصرية:** تصميم متجاوب (Responsive) وسهل الاستخدام مبني بأحدث التقنيات.
+## ✨ Key Features
+- 🔐 **Authentication & RBAC:** Secure user and lawyer accounts with role-based access control.
+- 📄 **AI Contract Analysis:** Upload a contract and ask direct questions using the built-in RAG engine.
+- 💬 **Interactive Community:** A dedicated space to share contract experiences and advice (available for registered users).
+- 👨‍⚖️ **Lawyer Directory:** Browse certified lawyers and contact them directly via WhatsApp.
+- 📱 **Modern UI:** Responsive design and intuitive user experience built with the latest web technologies.
 
-## 🛠️ التقنيات المستخدمة
-- **الواجهة الأمامية (Frontend):** React.js + Vite + React Router
-- **الواجهة الخلفية (Backend):** FastAPI + SQLite (SQLAlchemy) + JWT Authentication
-- **الذكاء الاصطناعي (AI):** Anthropic Claude API + RAG Engine (Sentence Transformers & ChromaDB)
+## 🛠️ Tech Stack
+- **Frontend:** React.js + Vite + React Router
+- **Backend:** FastAPI + SQLite (SQLAlchemy) + JWT Authentication
+- **AI Integration:** Anthropic Claude API + RAG Engine (Sentence Transformers & ChromaDB)
 
 ---
 
-## 🚀 طريقة التشغيل (التطوير المحلي)
+## 🚀 How to Run (Local Development)
 
-### 1. إعداد الباكند (Backend)
-افتح نافذة موجه الأوامر (Terminal) وانتقل لمجلد الباكند:
+### 1. Backend Setup
+Open a terminal and navigate to the backend directory:
 ```bash
 cd Hacathon/backend
 
-# تفعيل البيئة الوهمية (إذا كانت موجودة)
+# Activate the virtual environment (if available)
 .venv\Scripts\activate.bat
 
-# تثبيت الحزم المطلوبة
+# Install required packages
 pip install -r requirements.txt
 
-# تشغيل السيرفر
+# Run the server
 uvicorn main:app --reload --port 8000
 ```
-سيعمل الباكند على الرابط: `http://localhost:8000`
+The backend will be available at: `http://localhost:8000`
 
-### 2. إعداد الفرونت اند (Frontend)
-افتح نافذة موجه أوامر جديدة وانتقل لمجلد الفرونت اند:
+### 2. Frontend Setup
+Open a new terminal and navigate to the frontend directory:
 ```bash
 cd Hacathon/frontend
 
-# تثبيت الحزم
+# Install dependencies
 npm install
 
-# تشغيل واجهة التطبيق
+# Start the development server
 npm run dev
 ```
-سيعمل الموقع على الرابط: `http://localhost:5173`
+The application will be available at: `http://localhost:5173`
 
 ---
 
-## 📂 هيكلة المشروع
+## 📂 Project Structure
 
-- `Hacathon/backend/`: يحتوي على أكواد FastAPI، قاعدة البيانات `app.db`، ومحرك الذكاء الاصطناعي `rag_engine.py`.
-- `Hacathon/frontend/`: يحتوي على واجهات React، مكونات التطبيق (Components)، وصفحات النظام (Pages).
+- `Hacathon/backend/`: Contains the FastAPI application, SQLite database (`app.db`), and the AI engine (`rag_engine.py`).
+- `Hacathon/frontend/`: Contains the React UI, components, routing, and styles.
